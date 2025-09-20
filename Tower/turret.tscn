@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://ctun1p6eyowxn"]
+
+[ext_resource type="Script" uid="uid://dlmj1ndo78rlo" path="res://Tower/turret.gd" id="1_bpe2r"]
+[ext_resource type="PackedScene" uid="uid://c1q8dxyusm648" path="res://Tower/Projectile.tscn" id="2_kwclw"]
+[ext_resource type="PackedScene" uid="uid://sseywf0h6wwu" path="res://Assets/Cannon.glb" id="3_m7iee"]
+[ext_resource type="PackedScene" uid="uid://ddd0oyh6md5eg" path="res://Assets/TurretBase.glb" id="4_253yq"]
+
+[sub_resource type="Animation" id="Animation_253yq"]
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TurretBase/Cannon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 2.135, -0.007)]
+}
+
+[sub_resource type="Animation" id="Animation_m7iee"]
+resource_name = "fire"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TurretBase/Cannon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 2.13489, -0.636776), Vector3(0, 2.135, -0.007)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hh67w"]
+_data = {
+&"RESET": SubResource("Animation_253yq"),
+&"fire": SubResource("Animation_m7iee")
+}
+
+[node name="Turret" type="Node3D"]
+script = ExtResource("1_bpe2r")
+projectile = ExtResource("2_kwclw")
+
+[node name="Timer" type="Timer" parent="."]
+editor_description = "Fire projetile "
+autostart = true
+
+[node name="TurretBase" type="Node3D" parent="."]
+
+[node name="Cannon" parent="TurretBase" instance=ExtResource("3_m7iee")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.135, -0.007)
+
+[node name="TurretBase1" parent="." instance=ExtResource("4_253yq")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_hh67w")
+}
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
